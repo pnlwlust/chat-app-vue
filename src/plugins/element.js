@@ -1,20 +1,22 @@
 import {
-  ElAside,
+  ElAside, ElAvatar,
   ElButton,
   ElCalendar,
-  ElCard, ElCheckbox, ElCollapse, ElCollapseItem,
-  ElContainer, ElDatePicker, ElDialog,
+  ElCard, ElCheckbox, ElCol, ElCollapse, ElCollapseItem,
+  ElContainer, ElDatePicker, ElDialog, ElDivider,
   ElFooter,
   ElForm,
   ElFormItem,
   ElHeader,
   ElInput,
-  ElMain, ElOption, ElPagination, ElRate, ElSelect, ElTable, ElTableColumn, ElTag
+  ElMain, ElOption, ElPagination, ElRate, ElRow, ElScrollbar, ElSelect, ElSpace, ElSwitch, ElTable, ElTableColumn, ElTag
 } from 'element-plus'
 
 export default (app) => {
   app.use(ElContainer)
   app.use(ElMain)
+  app.use(ElRow)
+  app.use(ElCol)
   app.use(ElCard)
   app.use(ElDialog)
   app.use(ElForm)
@@ -35,5 +37,10 @@ export default (app) => {
   app.use(ElOption)
   app.use(ElHeader)
   app.use(ElAside)
+  app.use(ElDivider)
   app.use(ElFooter)
+  app.use(ElSpace)
+  app.use(ElScrollbar)
+  app.use(ElAvatar)
+  app.use(ElSwitch)
 }

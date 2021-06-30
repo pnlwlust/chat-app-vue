@@ -1,13 +1,15 @@
 <template>
-  <el-container style="">
+  <el-row style="">
+    <el-col>
       <Login @loggedIn="isLoggedIn" v-if="!loggedIn"/>
-      <Dashboard v-else/>
-  </el-container>
+      <ChatBoard v-else/>
+    </el-col>
+  </el-row>
 </template>
 <script>
 
 import Login from "@/components/Login";
-import Dashboard from "@/pages/Dashboard";
+import ChatBoard from "./ChatBoard";
 
 export default {
   name: 'Home',
@@ -17,7 +19,7 @@ export default {
       }
   },
   components: {
-    Dashboard,
+    ChatBoard,
     Login
   },
   methods:{
