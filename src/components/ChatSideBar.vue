@@ -2,36 +2,14 @@
   <el-container >
     <el-row>
       <el-col>
-        <el-row>
-          <el-col :span="6">
-            <el-avatar :size="60" src="https://empty" @error="errorHandler">
-              <img :src="profile.avatar" alt="profile avatar"/>
-            </el-avatar>
-          </el-col>
-          <el-col class="profile-info-col" :span="18">
-            <el-row gutter="0" type="flex" align="middle">
-              <el-col>
-                <span class="profile-name">{{profile.name}}</span>
-              </el-col>
-              <el-col></el-col>
-              <el-col>
-                <el-tooltip content="swith to turn offline" placement="end">
-                <el-switch
-                    v-model="isActive"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
-                />
-                </el-tooltip>
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-row>
-        <el-divider></el-divider>
+        <ProfileStatusbox />
       </el-col>
+      <el-divider></el-divider>
       <el-col>
         <el-scrollbar id="scrollbar" height="400px" width="10px" >
-          <div v-for="(item, index) in personInfo" :key="index">
+          <div @click.prevent="personbarClicked(item)" class="profile-bar" v-for="(item, index) in recentChats" :key="index">
             <PersonInfoBar :value="item"/>
+            <el-divider></el-divider>
           </div>
         </el-scrollbar>
       </el-col>
@@ -41,27 +19,38 @@
 
 <script>
 import PersonInfoBar from "./PersonInfoBar";
+import {mapActions, mapGetters} from "vuex";
+import ProfileStatusbox from "./ProfileStatusbox";
 
 export default {
   name: 'ChatSideBar',
-  components: {PersonInfoBar},
+  components: {ProfileStatusbox, PersonInfoBar},
   data() {
     return {
       isActive: true,
-      profile:{name:"profile name", avatar:"../assets/images/logo.png"},
-      personInfo:[{name:'person name', avatar:'../assets/images/male-profile-80.png', alt:'contacts profile avatar'},
-        {name:'person one', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'how are you'},
-        {name:'person two', avatar:'../assets/images/male-profile-80.png', alt:'contacts profile avatar', lastmsg:'this is a nice place'},
-        {name:'person three', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'what a day'},
-        {name:'person four', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'I am goint out'},
-        {name:'person fivw', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'its raining'},
-        {name:'person six', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'are you coming today?'}
-      ]
     }
   },
+  mounted() {
+    this.fetchRecentChats();
+  },
+  computed:{
+    ...mapGetters(["recentChats"])
+  },
   methods: {
+    ...mapActions('chat', ["fetchRecentChats", "fetchChatHistory"]),
     errorHandler() {
       return true
+    },
+    personbarClicked(item){
+      console.log("Person bar clicked")
+      console.log(item)
+      this.fetchChatHistory(item)
+    },
+    fetchRecentChats(){
+
+    },
+    fetchContacts(){
+
     }
   }
 }
@@ -77,5 +66,14 @@ export default {
 .el-row .profile-info-col .profile-name {
   font-family: monospace;
   font-size: x-large;
+}
+.profile-bar {
+  border-bottom: #b4b0b0;
+}
+.profile-bar:hover {
+  color: inherit;
+}
+.profile-bar:active {
+  color: inherit;
 }
 </style>

@@ -1,15 +1,16 @@
 <template>
   <el-row style="">
     <el-col>
-      <Login @loggedIn="isLoggedIn" v-if="!loggedIn"/>
+      <Authentication v-if="!isLoggedIn"/>
       <ChatBoard v-else/>
     </el-col>
   </el-row>
 </template>
 <script>
 
-import Login from "@/components/Login";
+import Authentication from "./AuthenticationPage";
 import ChatBoard from "./ChatBoard";
+import {mapGetters} from "vuex";
 
 export default {
   name: 'Home',
@@ -20,12 +21,12 @@ export default {
   },
   components: {
     ChatBoard,
-    Login
+    Authentication
+  },
+  computed:{
+    ...mapGetters(['isLoggedIn']),
   },
   methods:{
-    isLoggedIn(value){
-     this.loggedIn = value;
-    }
   }
 }
 </script>

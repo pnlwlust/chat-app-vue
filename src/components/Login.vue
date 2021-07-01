@@ -1,25 +1,25 @@
 <template>
-  <el-card class="box-card login-card">
     <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm" >
       <el-form-item prop="username">
         <el-input type="username" prefix-icon="el-icon-user" v-model="loginForm.username" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item prop="pass">
-        <el-input type="password" prefix-icon="el-icon-lock" v-model="loginForm.pass" autocomplete="off"></el-input>
+      <el-form-item prop="password">
+        <el-input type="password" prefix-icon="el-icon-lock" v-model="loginForm.password" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item prop="rememberMe" left>
         <el-checkbox v-model="loginForm.rememberMe">Remember Me</el-checkbox>
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="submitForm('loginForm')">Submit</el-button>
+        <el-button type="primary" @click="submitForm('loginForm')">Login</el-button>
         <el-button @click="resetForm('loginForm')">Reset</el-button>
       </el-form-item>
     </el-form>
-  </el-card>
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
@@ -39,11 +39,11 @@ export default {
     return {
       loginForm: {
         username: '',
-        pass: '',
+        password: '',
         rememberMe:''
       },
       rules: {
-        pass: [
+        password: [
           { validator: validatePass, trigger: 'blur' }
         ],
         username: [
@@ -54,13 +54,13 @@ export default {
     };
   },
   methods: {
+    ...mapActions('user', ['login']),
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$emit('loggedIn' , true);
+          this.login(this.loginForm)
         } else {
           console.log('error submit!!');
-          this.$emit('loggedIn' , false);
           return false;
         }
       });
@@ -68,7 +68,7 @@ export default {
     toChatView() {
       let self = this
       let username = self.loginForm.username
-      let password = self.loginForm.pass
+      let password = self.loginForm.password
 
       let params = { username: username, password: password }
       this.axios.get('/api/login', { params: params })

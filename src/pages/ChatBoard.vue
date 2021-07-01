@@ -1,10 +1,4 @@
 <template>
-<!--<el-row>
-<el-col :span="6"><ChatSideBar/></el-col>
-<el-col :span="12"> <ChatArea/> </el-col>
-  <el-col :span="6"><ChatDetails/></el-col>
-</el-row>
-</template>-->
   <el-container>
     <el-aside><ChatSideBar/></el-aside>
     <el-main> <ChatArea/> </el-main>

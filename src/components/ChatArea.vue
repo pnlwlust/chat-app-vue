@@ -33,6 +33,7 @@
 <script>
 
 import MessageItem from "./MessageItem";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   name:'ChatArea',
@@ -41,28 +42,17 @@ export default {
   data() {
     return {
       profile:{name:'Ram'},
-      newMessage: {text:''},
-      messages: [{
-        _id: 1,
-        author: 'Bodii',
-        avatar: '../assets/images/male-profile-80.png',
-        isSelf: true,
-        createdTime: new Date(),
-        text: 'k xa ta halkhabar'
-      },{
-        _id: 2,
-        author: 'aaluu',
-        avatar: '../assets/images/female-profile-80.png',
-        isSelf: false,
-        createdTime: new Date(),
-        text: 'mero sab thik xa'
-      }]
+      newMessage: {text:''}
     }
   },
   updated() {
     // whenever data changes and the component re-renders, this is called.
   },
+  computed:{
+    ...mapGetters({messages: 'chatHistory'})
+  },
   methods:{
+    ...mapActions('chat',['saveMessage']),
     scrollToEnd: function () {
       const lastIndex = this.messages.length - 1;
       this.$nextTick(() => {
@@ -74,14 +64,15 @@ export default {
     addMessage() {
       this.$refs.newMessageForm.validate((valid) => {
         if (valid) {
-          this.messages.push({
+          const msg = {
             _id: 100 * Math.random(),
             author: 'Ram',
             isSelf: true,
             createdTime: new Date(),
             headImgSrc: 'https://vuefe.cn/images/logo.png',
             text: this.newMessage.text
-          })
+          }
+          this.saveMessage(msg)
           this.scrollToEnd()
         } else {
           this.$message.error('There was some error');

@@ -2,24 +2,28 @@
     <el-row class="chat-details">
       <el-col>
         <el-avatar :size="100" src="https://empty" @error="errorHandler">
-          <img :src="profile.avatar" alt="profile avatar"/>
+          <img :src="contactProfile.avatar" alt="profile avatar"/>
         </el-avatar>
       </el-col>
       <el-col style="margin-top:10px">
-        <span class="profile-name">{{profile.name}}</span>
+        <span class="profile-name">{{contactProfile.name}}</span>
       </el-col>
     </el-row>
 </template>
 
 <script>
 
+import {mapGetters} from "vuex";
+
 export default {
   name:'ChatDetails',
   components: {},
   data() {
     return {
-      profile: {name: "profile name", avatar: "../assets/images/logo.png"},
     }
+  },
+  computed:{
+    ...mapGetters(["contactProfile"])
   },
   methods:{
     errorHandler(){

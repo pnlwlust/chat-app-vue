@@ -3,20 +3,20 @@ const state = {
 }
 
 const mutations = {
-    ADD_ERROR_LOG: (state, log) => {
+    addError: (state, log) => {
         state.logs.push(log)
     },
-    CLEAR_ERROR_LOG: (state) => {
+    clearErrors: (state) => {
         state.logs.splice(0)
     }
 }
 
 const actions = {
     addErrorLog({ commit }, log) {
-        commit('ADD_ERROR_LOG', log)
+        commit('addError', log)
     },
     clearErrorLog({ commit }) {
-        commit('CLEAR_ERROR_LOG')
+        commit('clearErrors')
     }
 }
 

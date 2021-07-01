@@ -9,7 +9,6 @@
       <span>{{value.name}}</span>
       <div class="lastmsg">{{value.lastmsg}}</div>
     </el-col>
-    <el-divider></el-divider>
   </el-row>
 </template>
 
