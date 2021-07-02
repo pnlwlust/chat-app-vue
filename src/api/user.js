@@ -1,6 +1,7 @@
 import callApi from '../config/axios.config.js'
 
 export function login(data) {
+    console.log("Inside login api call")
 /*
     return request({
         url: '/users/login',
@@ -19,18 +20,16 @@ export function register(data) {
         })
 }
 
-export function getUserProfile(token) {
+export function getUserProfile() {
     return callApi({
         url: '/users/profile',
-        method: 'get',
-        params: { token }
+        method: 'get'
     })
 }
-export function getUserDetails(token) {
+export function getUserDetails() {
     return callApi({
         url: '/users/details',
-        method: 'get',
-        params: { token }
+        method: 'get'
     })
 }
 

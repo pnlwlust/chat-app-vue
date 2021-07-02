@@ -43,3 +43,7 @@ const router = createRouter({
 })
 
 export default router
+
+export function resetRouter(){
+   router.push("/")
+}

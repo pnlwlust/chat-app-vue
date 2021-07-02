@@ -1,9 +1,9 @@
 import * as api from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
+import {resetRouter} from "../../router";
+import  tokenService  from '../../utils/token.service'
 
 const state = {
-    jwtToken: getToken(),
+    jwtToken: tokenService.getJwtToken(),
     name: '',
     avatar: '',
     statusMessage: '',
@@ -32,18 +32,17 @@ const actions = {
     // user login
     async login({ commit }, userInfo) {
         const { username, password } = userInfo
-        console.log("Inside login action")
-        console.log(userInfo)
            try{
             const response = await api.login({ username: username.trim(), password: password })
                 const data = response
-               const tkn = data.token || 12345
-                commit('setJWT', tkn)
+               const token = data.token || 12345
+                commit('setJWT', token)
                 commit('setLoggedIn')
-                setToken(tkn)
+                tokenService.setJwtToken(token)
                 return response
             }
             catch(error) {
+                tokenService.clearJwtToken()
                 console.log(error)
             }
     },
@@ -56,14 +55,15 @@ const actions = {
                     commit("statusMessage", "Successfully registered")
                     resolve()
                 }).catch(error => {
+                tokenService.clearJwtToken()
                 reject(error)
             })
         })
     },
     // get user info
-    getInfo({ commit, state }) {
+    getUserDetails({ commit}) {
         return new Promise((resolve, reject) => {
-            api.getInfo(state.token).then(response => {
+            api.getUserDetails().then(response => {
 
                 const { data } = response
                 if (!data) {
@@ -80,12 +80,30 @@ const actions = {
         })
     },
 
+    getUserProfile({commit}) {
+        return new Promise((resolve, reject) => {
+            api.getUserProfile().then(response => {
+
+                const { data } = response
+                if (!data) {
+                    reject('Verification failed, please Login again.')
+                }
+                const { name, avatar} = data
+
+                commit('setName', name)
+                commit('setAvatar', avatar)
+                resolve(data)
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    },
     // user logout
     logout({ commit, state}) {
         return new Promise((resolve, reject) => {
             api.logout(state.token).then(() => {
                 commit('setToken', '')
-                removeToken()
+                tokenService.clearJwtToken()
                 resetRouter()
                 resolve()
             }).catch(error => {

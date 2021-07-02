@@ -1,6 +1,6 @@
 import axios from 'axios'
 import store from '@/store'
-import { getJwtToken } from '@/utils/auth'
+import  tokenService  from '../utils/token.service'
 import {ElMessageBox, ElMessage} from "element-plus";
 
 // create an axios instance
@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
 // request interceptor
 axiosInstance.interceptors.request.use(
     config => {
-            config.headers['Bearer '] = getJwtToken()
+            config.headers['Bearer '] = tokenService.getJwtToken()
         return config
     },
     error => {
