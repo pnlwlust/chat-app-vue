@@ -9,11 +9,11 @@
         <el-card class="content msg-bubble" :body-style="{ padding: '10px' }">
           <el-row type="flex" :justify=" message.isSelf === true?'end':'start' ">
             <el-col :span="6" class="title">
-              <span class="author">{{ message.isSelf? "me": message.author }}</span>.
+              <span class="author">{{ message.isSelf? "me": message.username }}</span>.
               <time class="time msg-time">{{ formatTime(message.createdTime) }}</time>
             </el-col>
             <el-col>
-                <p class="content">{{ message.text }}</p>
+                <p class="content">{{ message.msg }}</p>
             </el-col>
           </el-row>
         </el-card>
@@ -55,7 +55,7 @@ export default {
 
 <style scoped>
 .msg-time {
-  font-size: 0.85em;
+  font-size: x-small;
 }
 .row .msg-box img {
   height: 40px;
@@ -63,7 +63,7 @@ export default {
   margin: 10px;
 }
 .el-row .msg-bubble .title {
-  font-size: 0.225em;
+  font-size: x-small;
   color: #b4b0b0;
 }
 .el-row .msg-box .content {

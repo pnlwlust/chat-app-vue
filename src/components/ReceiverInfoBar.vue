@@ -1,25 +1,25 @@
 <template>
   <el-row type="flex" justify="start">
     <el-col :span="6">
-      <el-avatar :size="30" src="https://empty" @error="errorHandler">
-        <img :src="value.avatar" :alt="value.alt"/>
+      <el-avatar :size="40" src="https://empty" @error="errorHandler">
+        <img :src="value.avatar || person.avatar" :alt="value.alt"/>
       </el-avatar>
     </el-col>
     <el-col class="profile-info-col" :span="18">
-      <span>{{value.name}}</span>
-      <div class="lastmsg">{{value.lastmsg}}</div>
+      <el-col>{{value.name || value.username || value.sender.username}}</el-col>
+      <el-col class="lastmsg"> {{value.msg}}</el-col>
     </el-col>
   </el-row>
 </template>
 
 <script>
 export default {
-  name: 'PersonInfoBar',
+  name: 'ReceiverInfoBar',
   data() {
     return {
       person: {
         name: 'person name',
-        avatar: 'https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png'
+        avatar: '../assets/images/female-profile-80.png'
       }
     }
   },
@@ -37,7 +37,10 @@ export default {
   text-align: start;
 }
 .el-row .profile-info-col .lastmsg {
-  font-size: 0.225em;
+  width: 200px;
+  font-size: x-small;
   color: #b4b0b0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

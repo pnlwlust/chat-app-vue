@@ -1,9 +1,9 @@
 <template>
   <el-row>
     <el-col>
-      <el-card class="box-card chat-card">
+      <el-card v-if="showChatBox" class="box-card chat-card">
         <el-header class="clearfix card-header">
-          <span>{{ profile.name }}</span>
+          <span>{{ receiver.name || receiver.username }}</span>
         </el-header>
         <el-card class="box-card" shadow="never" :body-style="{ padding:'10px' }">
           <el-scrollbar id="scrollbar" height="400px" width="10px">
@@ -15,17 +15,18 @@
           </el-scrollbar>
         </el-card>
         <el-card class="msg-input-box" shadow="never" :body-style="{ padding:'10px' }">
-              <el-form :inline="true" ref="newMessageForm" :model="newMessage"
-                       label-width="0px" class="newMessageForm" >
-                <el-form-item  prop="text" style="width: 500px" >
-                  <el-input type="textarea" spellcheck="false" v-model="newMessage.text" @keyup.enter="addMessage"></el-input>
-                </el-form-item>
-                <el-form-item  prop="text">
-                  <el-button class="send-message" icon="caret-right" @click="addMessage()" type="primary">Send</el-button>
-                </el-form-item>
-              </el-form>
+          <el-form :inline="true" ref="newMessageForm" :model="newMessage"
+                   label-width="0px" class="newMessageForm" >
+            <el-form-item  prop="text" style="width: 500px" >
+              <el-input type="textarea" spellcheck="false" v-model="newMessage.msg" @keyup.enter="sendMessage"></el-input>
+            </el-form-item>
+            <el-form-item  prop="text">
+              <el-button class="send-message" icon="caret-right" @click="sendMessage()" type="primary">Send</el-button>
+            </el-form-item>
+          </el-form>
         </el-card>
       </el-card>
+      <el-card class="select-user-msg" v-else>Please select someone to chat with</el-card>
     </el-col>
   </el-row>
 </template>
@@ -41,15 +42,20 @@ export default {
 
   data() {
     return {
-      profile:{name:'Ram'},
-      newMessage: {text:''}
+      typing:false,
+      newMessage: {msg:''}
     }
   },
-  updated() {
-    // whenever data changes and the component re-renders, this is called.
-  },
   computed:{
-    ...mapGetters({messages: 'chatHistory'})
+    ...mapGetters({messages: 'chatHistory', profile: 'profile', receiver: 'receiverProfile'}),
+    showChatBox(){
+      return Object.keys(this.receiver).length
+    }
+  },
+  watch: {
+    newMessage(value) {
+      value ? this.$socket.emit('typing', { profile: this.profile, value: true}) : this.$socket.emit('typing', { profile: this.profile, value: false})
+    }
   },
   methods:{
     ...mapActions('chat',['saveMessage']),
@@ -61,18 +67,24 @@ export default {
           el.scrollIntoView({behaviour:'smooth'})
       })
     },
-    addMessage() {
+    sendMessage() {
       this.$refs.newMessageForm.validate((valid) => {
         if (valid) {
+          console.log("sending message to ")
+          console.log(this.receiver)
           const msg = {
-            _id: 100 * Math.random(),
-            author: 'Ram',
+            id: this.profile.id,
+            sender: this.profile,
+            author: this.profile.name,
             isSelf: true,
             createdTime: new Date(),
-            headImgSrc: 'https://vuefe.cn/images/logo.png',
-            text: this.newMessage.text
+            avatar: this.profile.avatar,
+            msg: this.newMessage.msg,
+            receiver: this.receiver
           }
+          this.$socket.emit('send-msg', msg)
           this.saveMessage(msg)
+          this.resetForm("newMessageForm")
           this.scrollToEnd()
         } else {
           this.$message.error('There was some error');
@@ -80,6 +92,10 @@ export default {
         this.$refs.newMessageForm.resetFields();
       });
     },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+      this.newMessage.msg='';
+    }
   }
 }
 </script>
@@ -87,5 +103,8 @@ export default {
 
 .el-row .msg-box .msg-col {
   margin-top: 10px;
+}
+.select-user-msg {
+  margin:auto 0px;
 }
 </style>

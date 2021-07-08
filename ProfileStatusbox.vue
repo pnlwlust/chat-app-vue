@@ -8,7 +8,7 @@
     <el-col class="profile-info-col" :span="18">
       <el-row :gutter="0" type="flex" align="middle">
         <el-col>
-          <span class="profile-name">{{profile.name}}</span>
+          <span class="profile-name">{{profile.name || profile.username}}</span>
         </el-col>
         <el-col></el-col>
         <el-col>

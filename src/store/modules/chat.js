@@ -1,32 +1,22 @@
+import {db} from "../../db";
 
 const state = {
-    chatHistory: [
-        {
-            _id: 1,
-            author: 'Bodii',
-            avatar: '../assets/images/male-profile-80.png',
-            isSelf: true,
-            createdTime: new Date(),
-            text: 'k xa ta halkhabar'
-        },{
-            _id: 2,
-            author: 'aaluu',
-            avatar: '../assets/images/female-profile-80.png',
-            isSelf: false,
-            createdTime: new Date(),
-            text: 'mero sab thik xa'
-        }
+    chatHistory:[],
+    receiverProfile: {},
+    senderProfile: {},
+    recentChats: [],
+/*
+    recentChats:[{id:1, username:'Bodii', name:'person name', avatar:'../assets/images/male-profile-80.png', alt:'contacts profile avatar'},
+        {id:1,sender:'aaluu', name:'person one', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'how are you'},
+        {id:2,sender:'three', name:'person two', avatar:'../assets/images/male-profile-80.png', alt:'contacts profile avatar', lastmsg:'this is a nice place'},
+        {id:3,sender:'four',name:'person three', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'what a day'},
+        {id:4,sender:'five',name:'person four', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'I am goint out'},
+        {id:5,sender:'six',name:'person fivw', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'its raining'},
+        {id:6,sender:'seven',name:'person six', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'are you coming today?'}
     ],
-    contactProfile: {},
-    profile: {name: "profile name", avatar: "../assets/images/logo.png"},
-    recentChats:[{id:1, name:'person name', avatar:'../assets/images/male-profile-80.png', alt:'contacts profile avatar'},
-        {id:1, name:'person one', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'how are you'},
-        {id:2, name:'person two', avatar:'../assets/images/male-profile-80.png', alt:'contacts profile avatar', lastmsg:'this is a nice place'},
-        {id:3, name:'person three', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'what a day'},
-        {id:4, name:'person four', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'I am goint out'},
-        {id:5, name:'person fivw', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'its raining'},
-        {id:6, name:'person six', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'are you coming today?'}
-    ]
+*/
+    allContacts:[],
+    activeUsers:[]
 }
 
 const mutations = {
@@ -36,19 +26,31 @@ const mutations = {
     setRecentChats: (state, recentChats) => {
         state.recentChats = recentChats
     },
-    setProfile: (state, profile) => {
-        state.profile = profile
+    setAllContacts: (state, allContacts) => {
+        state.allContacts = allContacts
     },
-    setContactProfile: (state, profile) => {
-        state.contactProfile = profile
+    setReceiverProfile: (state, profile) => {
+        state.receiverProfile = profile
+    },
+    setSenderProfile: (state, profile) => {
+        state.senderProfile = profile
     },
     addToChatHistory: (state, msg) => {
-    state.chatHistory.push(msg)
-},
+        console.log(msg)
+        if(msg.sender)
+            state.chatHistory.push(msg)
+    },
+    addActiveUsers: (state, data) => {
+        state.activeUsers.push(data);
+    },
+    setActiveUsers: (state, data) => {
+        state.activeUsers = data;
+    }
 }
 
 const actions = {
-    fetchRecentChats({ commit }) {
+    initRecentChats({ commit }) {
+        console.log("Init recent chats")
         /*
                 return new Promise(resolve => {
                     let accessedRoutes
@@ -61,14 +63,28 @@ const actions = {
                     resolve(accessedRoutes)
                 })
         */
-        commit('setRecentChats',[])
+        const recentMsg = []
+        const allMessages = db.getAllMessages()
+        for(const item in allMessages){
+            const profile = {}
+            profile.username = item
+            profile.msg = allMessages[item][0].msg
+            recentMsg.push(profile)
+        }
+
+        console.log(recentMsg)
+        commit('setRecentChats', recentMsg)
     },
     fetchChatHistory({ commit }, item) {
-        commit('setContactProfile',item)
-        commit('setChatHistory',[])
+        commit('setReceiverProfile',item.sender)
+        console.log("Chat history from db for")
+        console.log(item)
+        const messages = db.getMessagesByUsername(item.username || item.sender.username)
+        console.log(messages)
+        commit('setChatHistory', messages)
     },
-    fetchProfile({ commit }) {
-        commit('profile',[])
+    fetchAllContacts({ commit }, item) {
+        commit('setAllContacts',item)
     },
     saveMessage({commit}, msg){
         commit('addToChatHistory',msg)

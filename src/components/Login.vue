@@ -1,10 +1,10 @@
 <template>
     <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm" >
       <el-form-item prop="username">
-        <el-input type="username" prefix-icon="el-icon-user" v-model="loginForm.username" autocomplete="off"></el-input>
+        <el-input type="username" prefix-icon="el-icon-user" placeholder="Username" v-model="loginForm.username" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input type="password" prefix-icon="el-icon-lock" v-model="loginForm.password" autocomplete="off"></el-input>
+        <el-input type="password" prefix-icon="el-icon-lock" placeholder="Password" v-model="loginForm.password" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item prop="rememberMe" left>
         <el-checkbox v-model="loginForm.rememberMe">Remember Me</el-checkbox>

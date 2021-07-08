@@ -6,52 +6,28 @@
       </el-col>
       <el-divider></el-divider>
       <el-col>
-        <el-scrollbar id="scrollbar" height="400px" width="10px" >
-          <div @click.prevent="personbarClicked(item)" class="profile-bar" v-for="(item, index) in recentChats" :key="index">
-            <PersonInfoBar :value="item"/>
-            <el-divider></el-divider>
-          </div>
-        </el-scrollbar>
+        <ChatListBox/>
       </el-col>
     </el-row>
   </el-container>
 </template>
 
 <script>
-import PersonInfoBar from "./PersonInfoBar";
-import {mapActions, mapGetters} from "vuex";
-import ProfileStatusbox from "./ProfileStatusbox";
+import ProfileStatusbox from "../../ProfileStatusbox";
+import ChatListBox from "./ChatListBox";
 
 export default {
   name: 'ChatSideBar',
-  components: {ProfileStatusbox, PersonInfoBar},
+  components: {ChatListBox, ProfileStatusbox},
   data() {
     return {
       isActive: true,
     }
   },
-  mounted() {
-    this.fetchRecentChats();
-  },
-  computed:{
-    ...mapGetters(["recentChats"])
-  },
   methods: {
-    ...mapActions('chat', ["fetchRecentChats", "fetchChatHistory"]),
     errorHandler() {
       return true
     },
-    personbarClicked(item){
-      console.log("Person bar clicked")
-      console.log(item)
-      this.fetchChatHistory(item)
-    },
-    fetchRecentChats(){
-
-    },
-    fetchContacts(){
-
-    }
   }
 }
 </script>

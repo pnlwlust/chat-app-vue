@@ -1,16 +1,16 @@
 <template>
     <el-form :model="registerForm" status-icon :rules="rules" ref="registerForm" >
       <el-form-item prop="name">
-        <el-input type="input" prefix-icon="el-icon-user" v-model="registerForm.name" autocomplete="off"></el-input>
+        <el-input type="input" prefix-icon="el-icon-user" placeholder="Name" v-model="registerForm.name" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item prop="username">
-        <el-input type="username" prefix-icon="el-icon-user" v-model="registerForm.username" autocomplete="off"></el-input>
+        <el-input type="username" prefix-icon="el-icon-user" placeholder="Username" v-model="registerForm.username" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input type="password" prefix-icon="el-icon-lock" v-model="registerForm.password" autocomplete="off"></el-input>
+        <el-input type="password" prefix-icon="el-icon-lock" placeholder="Password" v-model="registerForm.password" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item prop="confirmPassword">
-        <el-input type="password" prefix-icon="el-icon-lock" v-model="registerForm.confirmPassword" autocomplete="off"></el-input>
+        <el-input type="password" prefix-icon="el-icon-lock" placeholder="Confirm Password" v-model="registerForm.confirmPassword" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('registerForm')">Register</el-button>
@@ -25,27 +25,6 @@ import {mapActions} from "vuex";
 export default {
   name: 'Register',
   data() {
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('Please input the password'));
-      } else {
-        callback();
-      }
-    };
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '' || value != this.password) {
-        callback(new Error('Passwords shoud match'));
-      } else {
-        callback();
-      }
-    };
-    var validateUsername = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('Please input the username again'));
-      } else {
-        callback();
-      }
-    };
     return {
       registerForm: {
         name:'',
@@ -55,15 +34,9 @@ export default {
         rememberMe:''
       },
       rules: {
-        password: [
-          { validator: validatePass, trigger: 'blur' }
-        ],
-        confirmPassword: [
-          { validator: validatePass2, trigger: 'blur' }
-        ],
-        username: [
-          { validator: validateUsername, trigger: 'blur' }
-        ]
+        password: [ { validator: this.validatePass, trigger: 'blur' } ],
+        confirmPassword: [ { validator: this.validatePass2, trigger: 'blur' } ],
+        username: [ { validator: this.validateUsername, trigger: 'blur' } ]
       }
     };
   },
@@ -74,6 +47,7 @@ export default {
         if (valid) {
           this.register(this.registerForm)
         } else {
+          console.log(valid)
           console.log('error submit!!');
           return false;
         }
@@ -84,6 +58,27 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    validatePass (rule, value, callback) {
+      if (value === '') {
+        callback(new Error('Please input the password'));
+      } else {
+        callback();
+      }
+    },
+    validatePass2 (rule, value, callback) {
+      if (value === '' || value !== this.registerForm.password) {
+        callback(new Error('Passwords should match'));
+      } else {
+        callback();
+      }
+    },
+    validateUsername (rule, value, callback) {
+      if (value === '') {
+        callback(new Error('Please input the username again'));
+      } else {
+        callback();
+      }
     }
   }
 }

@@ -10,9 +10,16 @@
 import ChatSideBar from "../components/ChatSideBar";
 import ChatArea from "../components/ChatArea";
 import ChatDetails from "../components/ChatDetails";
+import {mapActions} from "vuex";
 
 export default {
   name:'ChatBoard',
-  components: {ChatSideBar, ChatArea, ChatDetails}
+  components: {ChatSideBar, ChatArea, ChatDetails},
+  created() {
+        // this.initData();
+  },
+  methods: {
+    ...mapActions('chat', ['initData']),
+  }
 }
 </script>

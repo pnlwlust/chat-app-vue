@@ -2,6 +2,7 @@ import axios from 'axios'
 import store from '@/store'
 import  tokenService  from '../utils/token.service'
 import {ElMessageBox, ElMessage} from "element-plus";
+import alertmessage from "../utils/alertmessage";
 
 // create an axios instance
 const axiosInstance = axios.create({
@@ -13,7 +14,8 @@ const axiosInstance = axios.create({
 // request interceptor
 axiosInstance.interceptors.request.use(
     config => {
-            config.headers['Bearer '] = tokenService.getJwtToken()
+        console.log(tokenService.getJwtToken())
+        config.headers['Authorization'] = 'Bearer ' + tokenService.getJwtToken()
         return config
     },
     error => {
@@ -26,41 +28,41 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
     response => {
         const res = response.data
-
         // if the custom code is not 20000, it is judged as an error.
-        if (res.code !== 200) {
-            ElMessage({
-                message: res.message || 'Error',
-                type: 'error',
-                duration: 5 * 1000
-            })
-
-            // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-            if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-                // to re-login
-                ElMessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-                    confirmButtonText: 'Re-Login',
-                    cancelButtonText: 'Cancel',
-                    type: 'warning'
-                }).then(() => {
-                    store.dispatch('user/resetToken').then(() => {
-                        location.reload()
-                    })
-                })
-            }
-            return Promise.reject(new Error(res.message || 'Error'))
-        } else {
+        if (response.status == 200 || response.status == 201) {
             return res
         }
-    },
-    error => {
-        console.log('err' + error) // for debug
         ElMessage({
-            message: error.message,
+            message: res.message || 'Error',
             type: 'error',
             duration: 5 * 1000
         })
-        return Promise.reject(error)
+
+        // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+        if (response.status === 50008 || response.status === 50012 || response.status === 50014) {
+            // to re-login
+            ElMessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+                confirmButtonText: 'Re-Login',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                store.dispatch('user/resetToken').then(() => {
+                    location.reload()
+                })
+            })
+        }
+        return Promise.reject(new Error(res.message || 'Error'))
+    },
+    error => {
+        console.log( error.response) // for debug
+        const errorMsg = error.response && error.response.data.errors
+        if(errorMsg){
+            Object.entries(errorMsg).map(([value], index) => {
+                console.log(index, value)
+                alertmessage(value)
+            })
+        }
+        // return Promise.reject(error)
     }
 )
 

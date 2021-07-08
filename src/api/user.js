@@ -14,7 +14,7 @@ export function login(data) {
 
 export function register(data) {
         return callApi({
-            url: '/users/register',
+            url: '/users',
             method: 'post',
             data
         })

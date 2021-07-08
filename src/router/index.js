@@ -47,3 +47,17 @@ export default router
 export function resetRouter(){
    router.push("/")
 }
+/*
+router.beforeEach((to, from, next) => {
+    const publicPages = ['/login', '/register', '/home'];
+    const authRequired = !publicPages.includes(to.path);
+    const loggedIn = store.getters.isLoggedIn;
+
+    // trying to access a restricted page + not logged in
+    // redirect to login page
+    if (authRequired && !loggedIn) {
+        next('/login');
+    } else {
+        next();
+    }
+});*/

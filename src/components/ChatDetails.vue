@@ -2,11 +2,11 @@
     <el-row class="chat-details">
       <el-col>
         <el-avatar :size="100" src="https://empty" @error="errorHandler">
-          <img :src="contactProfile.avatar" alt="profile avatar"/>
+          <img :src="receiverProfile.avatar" alt="profile avatar"/>
         </el-avatar>
       </el-col>
       <el-col style="margin-top:10px">
-        <span class="profile-name">{{contactProfile.name}}</span>
+        <span class="profile-name">{{receiverProfile.name || receiverProfile.username}}</span>
       </el-col>
     </el-row>
 </template>
@@ -23,7 +23,7 @@ export default {
     }
   },
   computed:{
-    ...mapGetters(["contactProfile"])
+    ...mapGetters(["receiverProfile"])
   },
   methods:{
     errorHandler(){

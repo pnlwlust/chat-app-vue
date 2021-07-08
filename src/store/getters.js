@@ -7,8 +7,10 @@ const getters = {
     errorLogs: state => state.errorLog.logs,
     isLoggedIn: state => state.user.isLoggedIn,
     recentChats: state => state.chat.recentChats,
+    allContacts: state => state.chat.allContacts,
+    activeUsers: state => state.chat.activeUsers,
     chatHistory: state => state.chat.chatHistory,
-    contactProfile: state => state.chat.contactProfile,
-    profile: state => state.chat.profile
+    receiverProfile: state => state.chat.receiverProfile,
+    profile: state => state.user.profile
 }
 export default getters
