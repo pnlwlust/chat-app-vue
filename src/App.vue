@@ -1,9 +1,7 @@
 <template>
-  <el-container style="">
-    <el-main>
+  <el-main style="">
       <router-view/>
-    </el-main>
-  </el-container>
+  </el-main>
 </template>
 
 <script>

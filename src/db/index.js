@@ -8,10 +8,12 @@ const ltg = {
             console.log(JSON.parse(item)[key])
             return JSON.parse(item)[key]
         }
-        return ''
+        return {}
     },
     setItem: (key, value) => {
-        const data = ltg.getItem(DB_NAME) || {}
+        const item = window.localStorage.getItem(DB_NAME)
+        let data = {}
+        if(item) { data = JSON.parse(item) }
         data[key] = value
         return window.localStorage.setItem(DB_NAME, JSON.stringify(data))
     },
@@ -32,20 +34,30 @@ export const db = {
     setProfile: (profile) => {
         ltg.setItem('profile', profile)
     },
+    setProfileForUsername: (username, profile) => {
+        const data = db.getDataByUsername(username)
+        if(!data.profile){
+            data["profile"] = profile
+            return ltg.setItem(CHAT_KEY_NAME, data)
+        }
+    },
     getAllMessages : () =>{
         const messages = ltg.getItem(CHAT_KEY_NAME)
         return messages || []
     },
+    getDataByUsername: (username) => {
+        const data = ltg.getItem(CHAT_KEY_NAME)
+        if(data) return data[username] || {}
+        return {}
+    },
     getMessagesByUsername : (username) =>{
-        const messages = ltg.getItem(CHAT_KEY_NAME)
-        if(messages) return messages[username]
+        const data = db.getDataByUsername(username)
+        if(data) return data['messages'] || []
         return []
     },
     addMessageToUsername : (username, message) =>{
-        const messages = db.getMessagesByUsername(username)
-        messages.push(message)
-        const data = {}
-        data[username] = messages
+        const data = db.getDataByUsername(username)
+        data['message']? data['messages'].push(message): data['message'] = [message]
         console.log("adding to db")
         console.log(data)
         return ltg.setItem(CHAT_KEY_NAME, data)
@@ -55,4 +67,10 @@ export const db = {
         data[username] = []
         return ltg.setItem(CHAT_KEY_NAME, data)
     },
+    getSessionId: () => {
+        return ltg.getItem("sessionId")
+    },
+    setSessionId: (sessionId) => {
+    return ltg.setItem("sessionId", sessionId)
+}
 }

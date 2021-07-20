@@ -2,14 +2,11 @@ import callApi from '../config/axios.config.js'
 
 export function login(data) {
     console.log("Inside login api call")
-/*
-    return request({
+    return callApi({
         url: '/users/login',
         method: 'post',
         data
     })
-*/
-    return data
 }
 
 export function register(data) {
@@ -18,6 +15,13 @@ export function register(data) {
             method: 'post',
             data
         })
+}
+
+export function listContacts() {
+    return callApi({
+        url: '/users',
+        method: 'get'
+    })
 }
 
 export function getUserProfile() {

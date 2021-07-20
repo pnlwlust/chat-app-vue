@@ -1,6 +1,7 @@
 import * as api from '@/api/user'
 import {resetRouter} from "../../router";
 import  tokenService  from '../../utils/token.service'
+import  * as socketService  from '../../utils/socket.service'
 import {connectWithUsername} from "../../utils/socket.service";
 import alertmessage from "../../utils/alertmessage";
 import {db} from "../../db";
@@ -9,7 +10,7 @@ const state = {
     jwtToken: tokenService.getJwtToken(),
     statusMessage: '',
     isLoggedIn: false,
-    profile: {userId:'', username:'', name: "profile name", avatar: "../assets/images/logo.png"},
+    profile: {userID:'', username:'', name: "", avatar: "../assets/images/logo.png"},
 }
 
 const mutations = {
@@ -49,14 +50,15 @@ const actions = {
         try{
             const response = await api.login({ username: username.trim(), password: password })
             const data = response
-            const token = data.token || 12345
+            if(!data) return "";
+            const token = data.token.token
             tokenService.setJwtToken(token)
             commit('setJWT', token)
             commit('setLoggedIn')
-            commit("setUsername", response.username)
-            commit("setName", response.name)
-            db.setProfile(response)
-            connectWithUsername(response.username)
+            commit("updateProfile", data.user)
+            socketService.saveSessionId(data.sessionId)
+            db.setProfile(data.user)
+            connectWithUsername(data.user._id, data.user.username)
             return response
         }
         catch(error) {

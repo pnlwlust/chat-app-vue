@@ -1,5 +1,5 @@
 <template>
-  <el-tabs tab-position="bottom" v-model="selectedSidebarTab" type="card" >
+  <el-tabs tab-position="bottom" v-model="activeTab" type="card" @tab-click="fetchContacts">
     <el-tab-pane name="recentChats">
       <template #label>
         <span><i class="el-icon-chat-line-round"></i></span>
@@ -12,7 +12,7 @@
       </template>
       <ActiveUsers/>
     </el-tab-pane>
-    <el-tab-pane name="allContacts">
+    <el-tab-pane name="allContacts" >
       <template #label>
         <span><i class="el-icon-message"></i></span>
       </template>
@@ -22,10 +22,10 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
 import AllContacts from "./AllContacts";
 import RecentChats from "./RecentChats";
 import ActiveUsers from "./ActiveUsers";
+import {mapActions} from "vuex";
 
 export default {
   name: 'ChatListBox',
@@ -33,22 +33,17 @@ export default {
   data() {
     return {
       isActive: true,
-      selectedSidebarTab:'recentChats',
+      activeTab: 'recentChats',
       sidebarComps: [{icon:'el-icon-chat-line-round', comp: RecentChats}, {icon:'el-icon-connection', comp: ActiveUsers}, {icon:'el-icon-message', comp: AllContacts}]
     }
   },
-  computed:{
-    ...mapGetters(["recentChats"])
-  },
   methods: {
-    ...mapActions('chat', ["fetchRecentChats", "fetchChatHistory"]),
+    ...mapActions('chat',['fetchAllContacts']),
+    fetchContacts(e){
+      e.index == 2 && this.fetchAllContacts();
+    },
     errorHandler() {
       return true
-    },
-    receiverBarClicked(item){
-      console.log("Person bar clicked")
-      console.log(item)
-      this.fetchChatHistory(item)
     }
   }
 }

@@ -22,19 +22,16 @@ export default {
       isActive: true,
     }
   },
-  mounted() {
-    this.fetchAllContacts();
-  },
   computed:{
     ...mapGetters(["allContacts"])
   },
   methods: {
-    ...mapActions('chat', ["fetchAllContacts", "fetchChatHistory"]),
+    ...mapActions('chat', ["fetchChatHistory"]),
     errorHandler() {
       return true
     },
     receiverBarClicked(item){
-      this.fetchChatHistory({...item})
+      this.fetchChatHistory({sender: item})
     }
   }
 }

@@ -1,5 +1,4 @@
 <template>
-  <el-container >
     <el-row>
       <el-col>
         <ProfileStatusbox />
@@ -9,7 +8,6 @@
         <ChatListBox/>
       </el-col>
     </el-row>
-  </el-container>
 </template>
 
 <script>

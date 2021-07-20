@@ -55,6 +55,13 @@ axiosInstance.interceptors.response.use(
     },
     error => {
         console.log( error.response) // for debug
+        const err = error.response
+        if(err.status == 401 && err.data)
+            ElMessage({
+                message: err.data.message || 'Error',
+                type: 'error',
+                duration: 5 * 1000
+            })
         const errorMsg = error.response && error.response.data.errors
         if(errorMsg){
             Object.entries(errorMsg).map(([value], index) => {
@@ -62,7 +69,7 @@ axiosInstance.interceptors.response.use(
                 alertmessage(value)
             })
         }
-        // return Promise.reject(error)
+        return Promise.reject(error)
     }
 )
 

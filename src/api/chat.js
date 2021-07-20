@@ -1,10 +1,11 @@
 import callApi from '../config/axios.config.js'
 
 export function fetchChatHistory(query) {
+    console.log(query)
     return callApi({
         url: '/chats/chat-history',
         method: 'get',
-        params: query
+        params: {...query}
     })
 }
 

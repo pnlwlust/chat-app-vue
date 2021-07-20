@@ -1,7 +1,7 @@
 <template>
   <el-row>
-    <el-col>
-      <el-card v-if="showChatBox" class="box-card chat-card">
+    <el-col v-if="showChatBox">
+<!--      <el-card  class="box-card chat-card">-->
         <el-header class="clearfix card-header">
           <span>{{ receiver.name || receiver.username }}</span>
         </el-header>
@@ -18,15 +18,20 @@
           <el-form :inline="true" ref="newMessageForm" :model="newMessage"
                    label-width="0px" class="newMessageForm" >
             <el-form-item  prop="text" style="width: 500px" >
-              <el-input type="textarea" spellcheck="false" v-model="newMessage.msg" @keyup.enter="sendMessage"></el-input>
+              <el-input type="textarea" spellcheck="false" v-model="newMessage.msg" @keyup.enter="sendMessage"  required></el-input>
             </el-form-item>
             <el-form-item  prop="text">
               <el-button class="send-message" icon="caret-right" @click="sendMessage()" type="primary">Send</el-button>
             </el-form-item>
           </el-form>
         </el-card>
-      </el-card>
-      <el-card class="select-user-msg" v-else>Please select someone to chat with</el-card>
+<!--      </el-card>-->
+
+    </el-col>
+    <el-col v-else>
+<!--      <el-card class="select-user-msg" >-->
+        Please select someone to chat with
+<!--      </el-card>-->
     </el-col>
   </el-row>
 </template>
@@ -68,6 +73,7 @@ export default {
       })
     },
     sendMessage() {
+      if(!this.newMessage.msg) return
       this.$refs.newMessageForm.validate((valid) => {
         if (valid) {
           console.log("sending message to ")

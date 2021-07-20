@@ -1,8 +1,8 @@
 <template>
   <el-container>
-    <el-aside><ChatSideBar/></el-aside>
-    <el-main> <ChatArea/> </el-main>
-    <el-aside><ChatDetails/></el-aside>
+    <el-aside><el-card><ChatSideBar/></el-card></el-aside>
+    <el-main style="padding: 5px;"><el-card><ChatArea/></el-card></el-main>
+    <el-aside><el-card><ChatDetails/></el-card></el-aside>
   </el-container>
 </template>
 
@@ -16,7 +16,7 @@ export default {
   name:'ChatBoard',
   components: {ChatSideBar, ChatArea, ChatDetails},
   created() {
-        // this.initData();
+    // this.initData();
   },
   methods: {
     ...mapActions('chat', ['initData']),

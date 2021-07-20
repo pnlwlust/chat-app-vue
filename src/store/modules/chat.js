@@ -1,22 +1,17 @@
 import {db} from "../../db";
+import * as api from '../../api/chat.js'
+import * as userApi from '../../api/user.js'
 
 const state = {
     chatHistory:[],
     receiverProfile: {},
     senderProfile: {},
     recentChats: [],
-/*
-    recentChats:[{id:1, username:'Bodii', name:'person name', avatar:'../assets/images/male-profile-80.png', alt:'contacts profile avatar'},
-        {id:1,sender:'aaluu', name:'person one', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'how are you'},
-        {id:2,sender:'three', name:'person two', avatar:'../assets/images/male-profile-80.png', alt:'contacts profile avatar', lastmsg:'this is a nice place'},
-        {id:3,sender:'four',name:'person three', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'what a day'},
-        {id:4,sender:'five',name:'person four', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'I am goint out'},
-        {id:5,sender:'six',name:'person fivw', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'its raining'},
-        {id:6,sender:'seven',name:'person six', avatar:'../assets/images/female-profile-80.png', alt:'contacts profile avatar', lastmsg:'are you coming today?'}
-    ],
-*/
     allContacts:[],
-    activeUsers:[]
+    activeUsers:[],
+    chatSidebar:{
+        activeTab:''
+    }
 }
 
 const mutations = {
@@ -75,18 +70,26 @@ const actions = {
         console.log(recentMsg)
         commit('setRecentChats', recentMsg)
     },
-    fetchChatHistory({ commit }, item) {
+    async fetchChatHistory({ commit }, item) {
         commit('setReceiverProfile',item.sender)
-        console.log("Chat history from db for")
+        console.log("Chat history from api for")
         console.log(item)
-        const messages = db.getMessagesByUsername(item.username || item.sender.username)
-        console.log(messages)
-        commit('setChatHistory', messages)
+        const messages = await api.fetchChatHistory({userID: item.sender.userID})
+        commit('setChatHistory', messages.chats)
     },
-    fetchAllContacts({ commit }, item) {
-        commit('setAllContacts',item)
+    async fetchAllContacts({ commit }) {
+        try{
+            console.log("Inside fetch all contacts")
+            const response = await userApi.listContacts()
+            commit('setAllContacts',response.users)
+            return response
+        }
+        catch(error) {
+            console.log(error)
+        }
     },
     saveMessage({commit}, msg){
+        db.addMessageToUsername(msg.receiver.username, msg)
         commit('addToChatHistory',msg)
     }
 }

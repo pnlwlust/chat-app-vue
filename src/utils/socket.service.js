@@ -12,7 +12,7 @@ socket.onAny((event, ...args) => {
 socket.on("users", (users) => {
     users.forEach((user) => {
         user.self = user.userID === socket.id;
-        if(user.self) store.commit("user/updateProfile", user)
+        // if(user.self) store.commit("user/updateProfile", user)
         // initState(user);
     });
     // put the current user first, and then sort by username
@@ -51,15 +51,19 @@ socket.on("new-msg", msg => {
             rct.forEach((item) => {
                 if(item.sender.username !== msg.sender.username) recentChats.push(item)
             })
-        db.addMessageToUsername(msg.sender.username, msg)
+    db.setProfileForUsername(msg.sender.username, msg.sender)
+    db.addMessageToUsername(msg.sender.username, msg)
         store.commit("chat/setRecentChats", recentChats)
         store.commit("chat/addToChatHistory", msg)
     // store.dispatch("addNewIncomingMessage", msg)
 })
-
 export default socket
 
-export function connectWithUsername(username){
-    socket.auth = {username}
+export function saveSessionId(sessionId){
+    socket.auth = { sessionId }
+    db.setSessionId(sessionId);
+}
+export function connectWithUsername(userID, username){
+    socket.auth = {userID, username}
     socket.connect()
 }
